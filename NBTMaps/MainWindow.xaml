@@ -1,0 +1,39 @@
+﻿<Window x:Class="NBTMaps.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NBTMaps"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="700" Width="700" 
+        KeyDown="Window_KeyDown">
+    <Grid Margin="0,0,-19,-20">
+        <TextBlock x:Name="textMessage" 
+                   HorizontalAlignment="Left" 
+                   Margin="10,0,0,0" 
+                   TextWrapping="Wrap" 
+                   VerticalAlignment="Top" 
+                   RenderTransformOrigin="-0.805,-0.017" 
+                   ToolTip="Name of selected map" 
+                   Foreground="#FF19477E"/>
+        <TreeView x:Name="tvFiles" 
+                  HorizontalAlignment="Left" 
+                  Height="532" 
+                  Margin="0,65,0,0" 
+                  VerticalAlignment="Top" 
+                  Width="154" ClipToBounds="True" />
+        <Grid HorizontalAlignment="Left" Height="512" Margin="150,85,0,0" VerticalAlignment="Top" Width="520">
+            <Image x:Name="MapImage" HorizontalAlignment="Left" Height="512" VerticalAlignment="Top" Width="512" Margin="10,10,0,0"/>
+        </Grid>
+        <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="168,21,0,0" VerticalAlignment="Top" Width="75" 
+                Click="buttonSave_Click" Background="{x:Null}" ToolTip="Save the displayed bitmap to a PNG file" FontWeight="Bold"/>
+        <Label x:Name="label" Content="File Name" HorizontalAlignment="Left" Margin="267,21,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
+        <Label x:Name="label2" Content="Map Scale" HorizontalAlignment="Left" Margin="267,55,0,0" VerticalAlignment="Top" Background="{x:Null}" RenderTransformOrigin="0.516,0.154"/>
+        <Label x:Name="label1" Content="Center X" HorizontalAlignment="Left" Margin="455,21,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
+        <Label x:Name="label3" Content="Center Z" HorizontalAlignment="Left" Margin="455,52,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
+        <TextBox x:Name="textFileName" HorizontalAlignment="Left" Height="23" Margin="335,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="101" FontWeight="Bold" Background="{x:Null}" IsReadOnly="True"/>
+        <TextBox x:Name="textCenterX" HorizontalAlignment="Left" Height="23" Margin="515,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontWeight="Bold" IsReadOnly="True"/>
+        <TextBox x:Name="textScale" HorizontalAlignment="Left" Height="23" Margin="335,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontWeight="Bold" IsReadOnly="True"/>
+        <TextBox x:Name="textCenterZ" HorizontalAlignment="Left" Height="23" Margin="515,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontWeight="Bold" IsReadOnly="True"/>
+    </Grid>
+</Window>
