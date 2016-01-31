@@ -5,35 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NBTMaps"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="700" 
+        Title="NBT Maps" Height="700" Width="700" 
         KeyDown="Window_KeyDown">
-    <Grid Margin="0,0,-19,-20">
-        <TextBlock x:Name="textMessage" 
-                   HorizontalAlignment="Left" 
-                   Margin="10,0,0,0" 
-                   TextWrapping="Wrap" 
-                   VerticalAlignment="Top" 
-                   RenderTransformOrigin="-0.805,-0.017" 
-                   ToolTip="Name of selected map" 
-                   Foreground="#FF19477E"/>
-        <TreeView x:Name="tvFiles" 
-                  HorizontalAlignment="Left" 
-                  Height="532" 
-                  Margin="0,65,0,0" 
-                  VerticalAlignment="Top" 
-                  Width="154" ClipToBounds="True" />
-        <Grid HorizontalAlignment="Left" Height="512" Margin="150,85,0,0" VerticalAlignment="Top" Width="520">
-            <Image x:Name="MapImage" HorizontalAlignment="Left" Height="512" VerticalAlignment="Top" Width="512" Margin="10,10,0,0"/>
-        </Grid>
-        <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="168,21,0,0" VerticalAlignment="Top" Width="75" 
-                Click="buttonSave_Click" Background="{x:Null}" ToolTip="Save the displayed bitmap to a PNG file" FontWeight="Bold"/>
-        <Label x:Name="label" Content="File Name" HorizontalAlignment="Left" Margin="267,21,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
-        <Label x:Name="label2" Content="Map Scale" HorizontalAlignment="Left" Margin="267,55,0,0" VerticalAlignment="Top" Background="{x:Null}" RenderTransformOrigin="0.516,0.154"/>
-        <Label x:Name="label1" Content="Center X" HorizontalAlignment="Left" Margin="455,21,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
-        <Label x:Name="label3" Content="Center Z" HorizontalAlignment="Left" Margin="455,52,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
-        <TextBox x:Name="textFileName" HorizontalAlignment="Left" Height="23" Margin="335,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="101" FontWeight="Bold" Background="{x:Null}" IsReadOnly="True"/>
-        <TextBox x:Name="textCenterX" HorizontalAlignment="Left" Height="23" Margin="515,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontWeight="Bold" IsReadOnly="True"/>
-        <TextBox x:Name="textScale" HorizontalAlignment="Left" Height="23" Margin="335,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontWeight="Bold" IsReadOnly="True"/>
-        <TextBox x:Name="textCenterZ" HorizontalAlignment="Left" Height="23" Margin="515,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontWeight="Bold" IsReadOnly="True"/>
-    </Grid>
+    <DockPanel LastChildFill="True" HorizontalAlignment="Left">
+        <DockPanel LastChildFill="True" HorizontalAlignment="Left" Margin="4" MinWidth="150">
+            <TextBox DockPanel.Dock="Top" VerticalAlignment="Top" BorderBrush="White">Game Files</TextBox>
+            <TextBox x:Name="textMessage" DockPanel.Dock="Bottom" Text="Status message" VerticalAlignment="Bottom" BorderBrush="White"/>
+            <TreeView x:Name="tvFiles" DockPanel.Dock="Top" />
+        </DockPanel>
+        <DockPanel LastChildFill="False" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2">
+            <Grid DockPanel.Dock="Top" MinWidth="360" HorizontalAlignment="Left">
+                <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="75" 
+                            Click="buttonSave_Click" Background="{x:Null}" ToolTip="Save the displayed bitmap to a PNG file" FontWeight="Bold"/>
+                <Label Content="File Name:" HorizontalAlignment="Left" Margin="90,5,0,0" Background="{x:Null}"/>
+                <TextBox x:Name="textFileName" HorizontalAlignment="Left" Margin="160,5,0,0" Width="80" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Background="{x:Null}" BorderBrush="White" IsReadOnly="True"/>
+                <Label Content="Center X" HorizontalAlignment="Left" Margin="250,5,0,0" Background="{x:Null}"/>
+                <TextBox x:Name="textCenterX" HorizontalAlignment="Left" Margin="310,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
+                <Label Content="Map Scale" HorizontalAlignment="Left" Margin="90,35,0,0" Background="{x:Null}" />
+                <TextBox x:Name="textScale" HorizontalAlignment="Left" Margin="160,35,0,0" TextWrapping="Wrap" Width="40" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
+                <Label Content="Center Z" HorizontalAlignment="Left" Margin="250,35,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
+                <TextBox x:Name="textCenterZ" HorizontalAlignment="Left" Margin="310,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
+            </Grid>
+            <DockPanel x:Name="MapPanel" Margin="2,10,2,0">
+                <Grid DockPanel.Dock="Top">
+                    <TextBox x:Name="TopLeftXZ" Margin="2,0,0,0" HorizontalAlignment="Left" Width="80" BorderBrush="White"  IsReadOnly="True"></TextBox>
+                    <TextBox x:Name="TopRightXZ" Margin="290,0,0,0" HorizontalAlignment="Right" Width="80" TextAlignment="Right" BorderBrush="White"  IsReadOnly="True"></TextBox>
+                    <TextBox x:Name="textCenter" Margin="200,0,194,0" Width="150" BorderBrush="White"  IsReadOnly="True"/>
+                </Grid>
+                <Grid DockPanel.Dock="Bottom">
+                    <TextBox x:Name="BottomLeftXZ" Margin="2,0,0,0" HorizontalAlignment="Left" Width="80" BorderBrush="White"  IsReadOnly="True"></TextBox>
+                    <TextBox x:Name="BottomRightXZ" Margin="290,2,0,0" HorizontalAlignment="Right" Width="80" TextAlignment="Right" BorderBrush="White"  IsReadOnly="True"></TextBox>
+                </Grid>
+                <Image x:Name="MapImage" Margin="2,0,0,0" Height="512" Width="512"/>
+            </DockPanel>
+        </DockPanel>
+        <Button x:Name="button" Content="Button" Height="670" VerticalAlignment="Top" Width="75"/>
+    </DockPanel>
 </Window>

@@ -45,8 +45,6 @@ namespace NBTMaps
                 string s = string.Format("{0} error: {1}", fi.Name, ex.Message);
                 throw new Exception(s);
             }
-
         }
-
     }
 }

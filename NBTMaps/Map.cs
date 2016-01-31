@@ -24,6 +24,10 @@ namespace NBTMaps
         public Bitmap bitmap { get; set; }
         public BitmapImage image { get; set; }
 
+        /// <summary>
+        /// Constructor for map class
+        /// </summary>
+        /// <param name="fi"></param>
         public Map(FileInfo fi)
         {
             FullName = String.Empty;
@@ -32,7 +36,11 @@ namespace NBTMaps
             Load(fi);
         }
 
-        public void Load(FileInfo fi)
+        /// <summary>
+        /// Load a map file into memory and display information
+        /// </summary>
+        /// <param name="fi">The map file to load</param>
+        private void Load(FileInfo fi)
         {
             NbtFile f = null;
             FullName = fi.FullName;
@@ -43,8 +51,9 @@ namespace NBTMaps
             }
             catch (Exception ex)
             {
-                string s = string.Format("{0} error: {1}", fi.Name, ex.Message);
+                string s = string.Format("Error loading {0}: {1}", fi.Name, ex.Message);
                 MessageBox.Show(s);
+                return;
             }
             try
             {
@@ -80,9 +89,9 @@ namespace NBTMaps
         }
 
         /// <summary>
-        /// Convert the Mincraft mapdata into a bitmap and then convert the bitmap into a displayable image
+        /// Convert the Mincraft map data into a bitmap and then convert the bitmap into a displayable image
         /// </summary>
-        public void MCMapToBitmap()
+        private void MCMapToBitmap()
         {
             byte[] Arry = new byte[ColorSize * channels];
             for (int i = 0, x = 0; i < Colors.Length; i++, x += channels)
@@ -100,8 +109,8 @@ namespace NBTMaps
         /// Convert the byte array into a bitmap
         /// </summary>
         /// <param name="array">A list of bytes that will define the new bitmap image</param>
-        /// <returns></returns>
-        public Bitmap ToBitmap(byte[] array)
+        /// <returns>Bitmap of the map data</returns>
+        private Bitmap ToBitmap(byte[] array)
         {
             if (array == null || array.Length == 0)
                 return null;
@@ -117,8 +126,8 @@ namespace NBTMaps
         /// Convert bitmap into an image that can be displayed on the screen.
         /// </summary>
         /// <param name="bitmap">Bitmap to convert</param>
-        /// <returns>Bitmap image</returns>
-        BitmapImage BitmapToImageSource(Bitmap bitmap)
+        /// <returns>Bitmap image of map data</returns>
+        private BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
             {

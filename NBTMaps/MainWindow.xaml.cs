@@ -1,14 +1,25 @@
-﻿using System;
+﻿/*----------------------------------------------------------------------------*
+    Name:       NBTMaps
+    Author:     Douglas Scott
+    Written:    January 2016
+
+    A utility to display maps created by the player in Minecraft outside of 
+    the game.  This program will also save the maps as PNG images.
+    
+    This program requires fNBT.dll to read the game files.  This library
+    is available on github.
+ *----------------------------------------------------------------------------*/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
+using Microsoft.Win32;
 
 namespace NBTMaps
 {
@@ -17,9 +28,10 @@ namespace NBTMaps
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum SortOrder { MapId, Scale };
+        //enum SortOrder { MapId, Scale };
 
-         private string lastSavePath = null;
+        //private SortOrder sortOrder = SortOrder.MapId;
+        private string lastSavePath = null;
 
         public MainWindow()
         {
@@ -64,13 +76,13 @@ namespace NBTMaps
         }
 
         /// <summary>
-        /// Get a list of all the Minecraft game directories 
+        /// Get a list of all the Minecraft game directories and add them to the Tree View
         /// </summary>
         /// <param name="tv">TreeView Structure to display</param>
-        /// <param name="rootPath"></param>
-        private void ListGameDirectories(TreeView tv, string rootPath)
+        /// <param name="mapsPath">Path to map files</param>
+        private void ListGameDirectories(TreeView tv, string mapsPath)
         {
-            string[] dirs = Directory.GetDirectories(rootPath);
+            string[] dirs = Directory.GetDirectories(mapsPath);
             foreach (string f in dirs)
             {
                 FileInfo fi = new FileInfo(f);
@@ -147,13 +159,37 @@ namespace NBTMaps
                     textCenterX.Text = map.xCenter.ToString();
                     textCenterZ.Text = map.zCenter.ToString();
                     buttonSave.IsEnabled = true;
+
+                    textCenter.Text = string.Format("{0}: ({1}x{2})",
+                        Path.GetFileNameWithoutExtension(file.Name),
+                        map.xCenter.ToString(), map.zCenter.ToString());
+                    CalculateBorders(map);
                 }
             }
             catch (Exception ex)
             {
-                //textMessage.Text = ex.Message;
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Calculate the corner coordinates
+        /// </summary>
+        /// <param name="map"></param>
+        private void CalculateBorders(Map map)
+        {
+            int scale = map.Scale + 1;
+            int x = map.xCenter;
+            int z = map.zCenter;
+            int multiple = x * scale;
+            int top = multiple - map.Height/2;
+            int bottom = multiple + map.Height/2;
+            int left = multiple - map.Width/2;
+            int right = multiple + map.Width/2;
+            TopLeftXZ.Text = string.Format("{0}x{1}", top.ToString(), left.ToString());
+            TopRightXZ.Text = string.Format("{0}x{1}", top.ToString(), right.ToString());
+            BottomLeftXZ.Text = string.Format("{0}x{1}", bottom.ToString(), left.ToString());
+            BottomRightXZ.Text = string.Format("{0}x{1}", bottom.ToString(), right.ToString());
         }
 
         private void buttonSave_Click(object sender, RoutedEventArgs e)
@@ -186,12 +222,6 @@ namespace NBTMaps
                 encoder.Save(fileStream);
                 fileStream.Close();
             }
-        }
-
-        private void Maps_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.F5)
-                FastSave();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
