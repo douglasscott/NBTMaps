@@ -160,7 +160,7 @@ namespace NBTMaps
                     textCenterZ.Text = map.zCenter.ToString();
                     buttonSave.IsEnabled = true;
 
-                    textCenter.Text = string.Format("{0}: ({1}x{2})",
+                    textCenter.Text = string.Format("{0}  {1},{2}",
                         Path.GetFileNameWithoutExtension(file.Name),
                         map.xCenter.ToString(), map.zCenter.ToString());
                     CalculateBorders(map);
@@ -181,15 +181,14 @@ namespace NBTMaps
             int scale = map.Scale + 1;
             int x = map.xCenter;
             int z = map.zCenter;
-            int multiple = x * scale;
-            int top = multiple - map.Height/2;
-            int bottom = multiple + map.Height/2;
-            int left = multiple - map.Width/2;
-            int right = multiple + map.Width/2;
-            TopLeftXZ.Text = string.Format("{0}x{1}", top.ToString(), left.ToString());
-            TopRightXZ.Text = string.Format("{0}x{1}", top.ToString(), right.ToString());
-            BottomLeftXZ.Text = string.Format("{0}x{1}", bottom.ToString(), left.ToString());
-            BottomRightXZ.Text = string.Format("{0}x{1}", bottom.ToString(), right.ToString());
+            int top = x + (scale * map.Height/2);
+            int bottom = x - (scale * map.Height/2);
+            int left = z + (scale * map.Width/2);
+            int right = z - (scale * map.Width/2);
+            TopLeftXZ.Text = string.Format("{0},{1}", top.ToString(), left.ToString());
+            TopRightXZ.Text = string.Format("{0},{1}", top.ToString(), right.ToString());
+            BottomLeftXZ.Text = string.Format("{0},{1}", bottom.ToString(), left.ToString());
+            BottomRightXZ.Text = string.Format("{0},{1}", bottom.ToString(), right.ToString());
         }
 
         private void buttonSave_Click(object sender, RoutedEventArgs e)
