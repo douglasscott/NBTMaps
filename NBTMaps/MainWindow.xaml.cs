@@ -190,7 +190,6 @@ namespace NBTMaps
             TopRightXZ.Text = string.Format("{0},{1}", top.ToString(), right.ToString());
             BottomLeftXZ.Text = string.Format("{0},{1}", bottom.ToString(), left.ToString());
             BottomRightXZ.Text = string.Format("{0},{1}", bottom.ToString(), right.ToString());
-            textBottom.Text = string.Format("Scale {0}", map.Scale.ToString());
         }
 
         private void buttonSave_Click(object sender, RoutedEventArgs e)
@@ -204,7 +203,7 @@ namespace NBTMaps
             {
                 lastSavePath = Path.GetDirectoryName(dlg.FileName);
                 //SaveImage(dlg.FileName);
-                ExportToPng(dlg.FileName, MapCanvas, CanvasGrid);
+                ExportToPng(dlg.FileName, MapCanvas);
             }
         }
 
@@ -247,30 +246,30 @@ namespace NBTMaps
             else
                 FileName = string.Format(@"{0}\{1}.png", lastSavePath, FileName);
             //SaveImage(FileName);
-            ExportToPng(FileName, MapCanvas, CanvasGrid);
+            ExportToPng(FileName, MapCanvas);
         }
 
         /// <summary>
         /// Write the canvas area (including text) to a PNG file
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="canvas"></param>
-        public void ExportToPng(string path, Canvas canvas, Grid grid)
+        /// <param name="surface"></param>
+        public void ExportToPng(string path, Canvas surface)
         {
-            if (path == null || canvas == null || grid == null)
+            if (path == null)
                 return;
 
             // Save current canvas transform
-            Transform transform = canvas.LayoutTransform;
+            Transform transform = surface.LayoutTransform;
             // reset current transform (in case it is scaled or rotated)
-            canvas.LayoutTransform = null;
+            surface.LayoutTransform = null;
 
             // Get the size of canvas
-            Size size = new Size(grid.Width, grid.Height);
+            Size size = new Size(surface.Width, surface.Height);
             // Measure and arrange the surface
             // VERY IMPORTANT
-            canvas.Measure(size);
-            canvas.Arrange(new Rect(size));
+            surface.Measure(size);
+            surface.Arrange(new Rect(size));
 
             // Create a render bitmap and push the surface to it
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
@@ -279,7 +278,7 @@ namespace NBTMaps
                 96d,
                 96d,
                 PixelFormats.Pbgra32);
-            renderBitmap.Render(canvas);
+            renderBitmap.Render(surface);
 
             // Create a file stream for saving image
             using (FileStream outStream = new FileStream(path, FileMode.Create))
@@ -293,7 +292,7 @@ namespace NBTMaps
             }
 
             // Restore previously saved layout
-            canvas.LayoutTransform = transform;
+            surface.LayoutTransform = transform;
         }
     }
 }
