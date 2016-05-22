@@ -33,6 +33,8 @@ namespace NBTMaps
         //private SortOrder sortOrder = SortOrder.MapId;
         private string lastSavePath = null;
 
+        private int saveCount = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -246,39 +248,40 @@ namespace NBTMaps
             else
                 FileName = string.Format(@"{0}\{1}.png", lastSavePath, FileName);
             //SaveImage(FileName);
-            ExportToPng(FileName, MapCanvas);
+            ExportToPng(FileName, MapCanvas, CanvasGrid);
         }
 
         /// <summary>
         /// Write the canvas area (including text) to a PNG file
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="surface"></param>
-        public void ExportToPng(string path, Canvas surface)
+        /// <param name="path">path of new PNG file</param>
+        /// <param name="canvas">Canvas that holds the map</param>
+        /// <param name="grid">parent grid of canvas</param>
+        public void ExportToPng(string path, Canvas canvas, Grid grid)
         {
             if (path == null)
                 return;
 
             // Save current canvas transform
-            Transform transform = surface.LayoutTransform;
+            Transform transform = canvas.LayoutTransform;
             // reset current transform (in case it is scaled or rotated)
-            surface.LayoutTransform = null;
+            canvas.LayoutTransform = null;
 
             // Get the size of canvas
-            Size size = new Size(surface.Width, surface.Height);
-            // Measure and arrange the surface
+            Size size = new Size(grid.Width, grid.Height);
+            // Measure and arrange the canvas
             // VERY IMPORTANT
-            surface.Measure(size);
-            surface.Arrange(new Rect(size));
+            canvas.Measure(size);
+            canvas.Arrange(new Rect(size));
 
-            // Create a render bitmap and push the surface to it
+            // Create a render bitmap and push the canvas to it
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
                 (int)size.Width,
                 (int)size.Height,
                 96d,
                 96d,
                 PixelFormats.Pbgra32);
-            renderBitmap.Render(surface);
+            renderBitmap.Render(canvas);
 
             // Create a file stream for saving image
             using (FileStream outStream = new FileStream(path, FileMode.Create))
@@ -292,7 +295,7 @@ namespace NBTMaps
             }
 
             // Restore previously saved layout
-            surface.LayoutTransform = transform;
+            canvas.LayoutTransform = transform;
         }
     }
 }
