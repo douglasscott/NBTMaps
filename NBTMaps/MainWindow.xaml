@@ -11,21 +11,28 @@
     <DockPanel LastChildFill="True" HorizontalAlignment="Left">
         <DockPanel LastChildFill="True" HorizontalAlignment="Left" Margin="4" MinWidth="150">
             <TextBox DockPanel.Dock="Top" VerticalAlignment="Top" BorderBrush="White">Game Files</TextBox>
-            <TextBox x:Name="textMessage" DockPanel.Dock="Bottom" Text="Status message" VerticalAlignment="Bottom" BorderBrush="White"/>
-            <TreeView x:Name="tvFiles" DockPanel.Dock="Top" />
+            <GroupBox Margin="3">
+                <StackPanel>
+                    <TextBox DockPanel.Dock="Top" VerticalAlignment="Top" BorderBrush="White">Sort Order</TextBox>
+                    <RadioButton Name="OrderMapId" Focusable="False" IsChecked="true">Map ID</RadioButton>
+                    <RadioButton Name="OrderScale" Focusable="False" IsChecked="false">Map Level</RadioButton>
+                    <TreeView x:Name="tvFiles" DockPanel.Dock="Top" />
+                    <TextBox x:Name="textMessage" DockPanel.Dock="Bottom" Text="Status message" VerticalAlignment="Bottom" BorderBrush="White"/>
+                </StackPanel>
+            </GroupBox>
         </DockPanel>
         <DockPanel LastChildFill="False" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2">
             <Grid DockPanel.Dock="Top" MinWidth="360" HorizontalAlignment="Left">
                 <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="75"
                             Click="buttonSave_Click" Background="{x:Null}" ToolTip="Save the displayed bitmap to a PNG file" FontWeight="Bold"/>
                 <Label Content="File Name:" HorizontalAlignment="Left" Margin="90,5,0,0" Background="{x:Null}"/>
-                <TextBox x:Name="textFileName" HorizontalAlignment="Left" Margin="160,5,0,0" Width="80" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Background="{x:Null}" BorderBrush="White" IsReadOnly="True"/>
+                <TextBox x:Name="textFileName" HorizontalAlignment="Left" Margin="160,7,0,0" Width="80" Height="18" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Background="{x:Null}" BorderBrush="White" IsReadOnly="True"/>
                 <Label Content="Center X" HorizontalAlignment="Left" Margin="250,5,0,0" Background="{x:Null}"/>
-                <TextBox x:Name="textCenterX" HorizontalAlignment="Left" Margin="310,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
+                <TextBox x:Name="textCenterX" HorizontalAlignment="Left" Margin="310,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="18" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
                 <Label Content="Map Scale" HorizontalAlignment="Left" Margin="90,35,0,0" Background="{x:Null}" />
-                <TextBox x:Name="textScale" HorizontalAlignment="Left" Margin="160,35,0,0" TextWrapping="Wrap" Width="40" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
+                <TextBox x:Name="textScale" HorizontalAlignment="Left" Margin="160,37,0,0" TextWrapping="Wrap" Width="40" Height="18" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
                 <Label Content="Center Z" HorizontalAlignment="Left" Margin="250,35,0,0" VerticalAlignment="Top" Background="{x:Null}"/>
-                <TextBox x:Name="textCenterZ" HorizontalAlignment="Left" Margin="310,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
+                <TextBox x:Name="textCenterZ" HorizontalAlignment="Left" Margin="310,37,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="40" Height="18" FontWeight="Bold" BorderBrush="White" IsReadOnly="True"/>
             </Grid>
             <Grid x:Name="CanvasGrid" Margin="0,0,0,0" Width="520" Height="550">
                 <Canvas x:Name="MapCanvas" >
@@ -46,6 +53,7 @@
                 </Canvas>
             </Grid>
         </DockPanel>
+        <GroupBox x:Name="groupBox" Header="GroupBox" Height="689" VerticalAlignment="Top"/>
         <!-- <Button x:Name="button" Content="Button" Height="670" VerticalAlignment="Top" Width="75"/> -->
     </DockPanel>
 </Window>

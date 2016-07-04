@@ -28,12 +28,17 @@ namespace NBTMaps
     /// </summary>
     public partial class MainWindow : Window
     {
-        //enum SortOrder { MapId, Scale };
+        enum SortOrder { MapId, Scale };
 
-        //private SortOrder sortOrder = SortOrder.MapId;
-        private string lastSavePath = null;
+        private SortOrder sortOrder = SortOrder.MapId;
+        private String gamePath = null;
+        private String lastSavePath = null;
+        private List<Node> nodeList = null;
+        private TreeViewItem tvItem = null;
 
-        private int saveCount = 0;
+        //public static readonly RoutedEvent ClickOrderEvent;
+
+        //private int displayCount = 0;
 
         public MainWindow()
         {
@@ -50,31 +55,52 @@ namespace NBTMaps
             buttonSave.IsEnabled = false;
             string path = null;
             textMessage.Text = String.Empty;
-            try
-            {
-                path = System.Environment.ExpandEnvironmentVariables("%APPDATA%");
-                if (String.IsNullOrEmpty(path))
-                {
-                    MessageBox.Show("APPDATA environment variable not defined");
-                    Application.Current.Shutdown();
-                    return;
-                }
-                path += @"\.minecraft\saves";
-                if (!Directory.Exists(path))
-                {
-                    MessageBox.Show("Directory " + path + " does not exist");
-                    Application.Current.Shutdown();
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                Application.Current.Shutdown();
-                return;
-            }
+            
+            OrderMapId.IsChecked = true;
+            OrderMapId.Checked += sortChanged;
+            OrderScale.IsChecked = false;
+            OrderScale.Checked += sortChanged;
+            path = GamePath;
             tvFiles.Items.Clear();
             ListGameDirectories(tvFiles, path);
+        }
+
+        /// <summary>
+        /// Return the path to where the games should be
+        /// </summary>
+        private String GamePath
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(gamePath))
+                    return gamePath;
+                String path = null;
+                try
+                {
+                    path = System.Environment.ExpandEnvironmentVariables("%APPDATA%");
+                    if (String.IsNullOrEmpty(path))
+                    {
+                        MessageBox.Show("APPDATA environment variable not defined");
+                        Application.Current.Shutdown();
+                        return null;
+                    }
+                    path += @"\.minecraft\saves";
+                    if (!Directory.Exists(path))
+                    {
+                        MessageBox.Show("Directory " + path + " does not exist");
+                        Application.Current.Shutdown();
+                        return null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    Application.Current.Shutdown();
+                    return null;
+                }
+                gamePath = path;
+                return path;
+            }
         }
 
         /// <summary>
@@ -96,6 +122,7 @@ namespace NBTMaps
                 ti.IsExpanded = false;
                 tv.Items.Add(ti);
             }
+            //displayCount = 0;
         }
 
         /// <summary>
@@ -106,11 +133,10 @@ namespace NBTMaps
         public void ExpandMapList(object sender, RoutedEventArgs e)
         {
             var tvi = (TreeViewItem)sender;
-            tvi.Items.Clear();
             var file = (FileInfo)tvi.Tag;
             string dataDir = file.FullName + @"\data";
             string[] dirFiles = Directory.GetFiles(dataDir);
-            var nodeList = new List<Node>();
+            nodeList = new List<Node>();
             foreach (string f in dirFiles)
             {
                 var fi = new FileInfo(f);
@@ -119,12 +145,30 @@ namespace NBTMaps
                 var node = new Node(fi);
                 nodeList.Add(node);
             }
+            tvItem = tvi;
+            DisplayNodes(tvi, nodeList);
+        }
+
+        /// <summary>
+        /// Display the nodes for the files in current game directory in order by sort selection
+        /// </summary>
+        /// <param name="tvi">The current Tree View Item for the current game selected</param>
+        /// <param name="nodeList">List of files under that game</param>
+        private void DisplayNodes(TreeViewItem tvi, List<Node> nodeList)
+        {
+            if (tvi == null || nodeList == null)
+                return;
+            tvi.Items.Clear();
             if (nodeList.Count == 0)
                 tvi.Items.Add(" ");
             else
             {
-                // resort the nodes so that they are in order by map id
-                var SortedNodes = nodeList.OrderBy(n => n.mapId).ToList();
+                // resort the nodes so that they are in order by map id or scale
+                List<Node> SortedNodes = null;
+                if (sortOrder == SortOrder.MapId)
+                    SortedNodes = nodeList.OrderBy(n => n.mapId).ToList();
+                else
+                    SortedNodes = nodeList.OrderBy(n => n.mapLevel).ToList();
                 foreach (Node node in SortedNodes)
                 {
                     var ti = new TreeViewItem();
@@ -176,9 +220,24 @@ namespace NBTMaps
         }
 
         /// <summary>
+        /// Handle change of sort order
+        /// </summary>
+        /// <param name="sender">The radio button that was just checked</param>
+        /// <param name="e"></param>
+        private void sortChanged(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+            if (rb.Name == "OrderMapId" && rb.IsChecked == true)
+                sortOrder = SortOrder.MapId;
+            else if (rb.Name == "OrderScale" && rb.IsChecked == true)
+                sortOrder = SortOrder.Scale;
+            DisplayNodes(tvItem, nodeList);
+        }
+
+        /// <summary>
         /// Calculate the corner coordinates
         /// </summary>
-        /// <param name="map"></param>
+        /// <param name="map">Map object to get coordinates for</param>
         private void CalculateBorders(Map map)
         {
             int scale = map.Scale + 1;
@@ -194,6 +253,11 @@ namespace NBTMaps
             BottomRightXZ.Text = string.Format("{0},{1}", bottom.ToString(), right.ToString());
         }
 
+        /// <summary>
+        /// Display the file dialog and the image file
+        /// </summary>
+        /// <param name="sender">The save button just clicked</param>
+        /// <param name="e"></param>
         private void buttonSave_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog dlg = new SaveFileDialog();
@@ -205,7 +269,7 @@ namespace NBTMaps
             {
                 lastSavePath = Path.GetDirectoryName(dlg.FileName);
                 //SaveImage(dlg.FileName);
-                ExportToPng(dlg.FileName, MapCanvas);
+                ExportToPng(dlg.FileName, MapCanvas, CanvasGrid);
             }
         }
 
@@ -299,5 +363,3 @@ namespace NBTMaps
         }
     }
 }
-
-
