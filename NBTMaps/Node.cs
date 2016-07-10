@@ -6,15 +6,22 @@ using fNbt;
 
 namespace NBTMaps
 {
+    /// <summary>
+    /// Class for Nodes to hold map collections in a TreeView
+    /// </summary>
     class Node
     {
-        private string FullName;                // full name of file
+        private string FullName;            // full name of file
         public FileInfo file {get; set; }   // File object
         public int mapId { get; set; }      // Map ID number
         public int mapLevel { get; set; }   // Level of this map
         public int xCenter { get; set; }
         public int zCenter { get; set; }
         
+        /// <summary>
+        /// Create an instance of Node to hold specified File information
+        /// </summary>
+        /// <param name="fi"></param>
         public Node(FileInfo fi)
         {
             FullName = fi.Name;
@@ -24,6 +31,10 @@ namespace NBTMaps
             GetFileInfo(fi);
         }
 
+        /// <summary>
+        /// Read the information from a file and load it into Node.  The file is expected to hold Minecraft map data in NBT format.
+        /// </summary>
+        /// <param name="fi">Object that holds File information</param>
         public void GetFileInfo(FileInfo fi)
         {
             NbtFile f = null;

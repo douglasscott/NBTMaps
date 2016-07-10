@@ -13,6 +13,7 @@ Changes:
 2016/02/21	Added additional information to images.  You can now save the text information in the images.
 2016/02/22	Fixed issue with canvas area moving to top of page when image was saved.
 2016/07/04  Added ability to sort map list by map scale
+2016/07/10  Fixed a number of bugs including coordinate calculation
 
 
 ### TODO List

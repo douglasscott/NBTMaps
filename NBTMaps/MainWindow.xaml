@@ -53,7 +53,7 @@
                 </Canvas>
             </Grid>
         </DockPanel>
-        <GroupBox x:Name="groupBox" Header="GroupBox" Height="689" VerticalAlignment="Top"/>
+        <!-- <GroupBox x:Name="groupBox" Header="GroupBox" Height="689" VerticalAlignment="Top"/> -->
         <!-- <Button x:Name="button" Content="Button" Height="670" VerticalAlignment="Top" Width="75"/> -->
     </DockPanel>
 </Window>

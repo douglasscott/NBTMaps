@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace NBTMaps
 {
@@ -36,10 +37,6 @@ namespace NBTMaps
         private List<Node> nodeList = null;
         private TreeViewItem tvItem = null;
 
-        //public static readonly RoutedEvent ClickOrderEvent;
-
-        //private int displayCount = 0;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -47,7 +44,7 @@ namespace NBTMaps
         }
 
         /// <summary>
-        /// Look under %APPDATA%\.minecraft\data for a list of game directories
+        /// Look under %APPDATA%\.minecraft\saves for a list of game directories
         /// and display this list to the user
         /// </summary>
         private void BuildTreeView()
@@ -91,6 +88,7 @@ namespace NBTMaps
                         Application.Current.Shutdown();
                         return null;
                     }
+                    gamePath = path;
                 }
                 catch (Exception e)
                 {
@@ -98,8 +96,7 @@ namespace NBTMaps
                     Application.Current.Shutdown();
                     return null;
                 }
-                gamePath = path;
-                return path;
+                return gamePath;
             }
         }
 
@@ -168,14 +165,14 @@ namespace NBTMaps
                 if (sortOrder == SortOrder.MapId)
                     SortedNodes = nodeList.OrderBy(n => n.mapId).ToList();
                 else
-                    SortedNodes = nodeList.OrderBy(n => n.mapLevel).ToList();
+                    SortedNodes = nodeList.OrderBy(n => n.mapId).OrderBy(n => n.mapLevel).ToList();
                 foreach (Node node in SortedNodes)
                 {
                     var ti = new TreeViewItem();
                     ti.Tag = node;
                     ti.Header = string.Format("{0}: {1}", node.file.Name, node.mapLevel);
                     ti.ToolTip = "Map " + node.mapId;
-                    ti.MouseUp += ShowMap;
+                    //ti.MouseUp += ShowMap;
                     ti.GotKeyboardFocus += ShowMap;
                     tvi.Items.Add(ti);
                 }
@@ -193,6 +190,7 @@ namespace NBTMaps
             var node = (Node)tvi.Tag;
             var file = node.file;
 
+            Debug.WriteLine("ShowMap() for " + file + "; Event " + e.RoutedEvent.ToString());
             buttonSave.IsEnabled = false;
             try
             {
@@ -226,6 +224,7 @@ namespace NBTMaps
         /// <param name="e"></param>
         private void sortChanged(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("sortChanged(); Event " + e.RoutedEvent.ToString());
             RadioButton rb = sender as RadioButton;
             if (rb.Name == "OrderMapId" && rb.IsChecked == true)
                 sortOrder = SortOrder.MapId;
@@ -240,13 +239,14 @@ namespace NBTMaps
         /// <param name="map">Map object to get coordinates for</param>
         private void CalculateBorders(Map map)
         {
-            int scale = map.Scale + 1;
+            Debug.WriteLine("CalculateBorders() for " + map.ToString(), " scale = " + map.Scale.ToString());
+            int scale = (int)Math.Pow(2.0, (double)map.Scale);
             int x = map.xCenter;
             int z = map.zCenter;
-            int top = x + (scale * map.Height/2);
-            int bottom = x - (scale * map.Height/2);
-            int left = z + (scale * map.Width/2);
-            int right = z - (scale * map.Width/2);
+            int top = x - (scale * map.Height/2);
+            int bottom = x + (scale * map.Height/2);
+            int left = z - (scale * map.Width/2);
+            int right = z + (scale * map.Width/2);
             TopLeftXZ.Text = string.Format("{0},{1}", top.ToString(), left.ToString());
             TopRightXZ.Text = string.Format("{0},{1}", top.ToString(), right.ToString());
             BottomLeftXZ.Text = string.Format("{0},{1}", bottom.ToString(), left.ToString());

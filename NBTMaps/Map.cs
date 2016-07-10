@@ -9,11 +9,15 @@ using System.Windows.Media.Imaging;
 
 namespace NBTMaps
 {
+    /// <summary>
+    /// Class for holding data from a Minecraft NBT map file
+    /// </summary>
     public class Map
     {
         private const int ColorSize = 16384;
         private const int channels = 4;
-        public string FullName { get; set; }
+        private string fullName { get; set; }
+        private string shortName { get; set; }
         public byte Scale { get; set; }
         public byte Dimension { get; set; }
         public int Height { get; set; }
@@ -21,19 +25,31 @@ namespace NBTMaps
         public int xCenter { get; set; }
         public int zCenter { get; set; }
         public byte[] Colors { get; set; }
-        public Bitmap bitmap { get; set; }
+        private Bitmap bitmap { get; set; }
         public BitmapImage image { get; set; }
 
         /// <summary>
-        /// Constructor for map class
+        /// Create a new instance of Map class
         /// </summary>
-        /// <param name="fi"></param>
+        /// <param name="fi">Map file to store in this node</param>
         public Map(FileInfo fi)
         {
-            FullName = String.Empty;
+            fullName = null;
+            shortName = null;
             bitmap = null;
             image = null;
             Load(fi);
+        }
+
+        /// <summary>
+        /// Return the file name for this map
+        /// </summary>
+        /// <returns>File name</returns>
+        public override string ToString()
+        {
+            if (shortName != null)
+                return shortName;
+            return base.ToString();
         }
 
         /// <summary>
@@ -42,12 +58,12 @@ namespace NBTMaps
         /// <param name="fi">The map file to load</param>
         private void Load(FileInfo fi)
         {
-            NbtFile f = null;
-            FullName = fi.FullName;
+            NbtFile f = new NbtFile();
+            fullName = fi.FullName;
+            shortName = fi.Name;
             try
             {
-                f = new NbtFile();
-                f.LoadFromFile(FullName);
+                f.LoadFromFile(fullName);
             }
             catch (Exception ex)
             {
@@ -73,9 +89,13 @@ namespace NBTMaps
             }
         }
 
+        /// <summary>
+        /// Clear all the map information
+        /// </summary>
         public void Clear()
         {
-            FullName = "";
+            fullName = null;
+            shortName = null;
             Scale = 0;
             Dimension = 0;
             Height = 0;
@@ -184,7 +204,7 @@ namespace NBTMaps
         /// <summary>
         /// Map colors used by Minecraft.  These colors can be calculated from the base colors instead of using this table if you prefer.
         /// </summary>
-        public int[,] mapColors = new int[144, channels]
+        private int[,] mapColors = new int[144, channels]
         {
             {  0,  0,  0,  0},      // Transparent
             {  0,  0,  0,  0},      // Transparent
@@ -335,7 +355,7 @@ namespace NBTMaps
         /// <summary>
         /// Base colors used by Minecraft as of version 1.8
         /// </summary>
-        public int[,] baseColors = new int[37, 4]
+        private int[,] baseColors = new int[37, channels]
         {
             {   0,   0,   0,   0 },
             { 255, 127, 178,  56 },
